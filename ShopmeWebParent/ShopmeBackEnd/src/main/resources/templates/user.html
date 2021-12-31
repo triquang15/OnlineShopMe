@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Context-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1">
+<title>Home - Shop Admin</title>
+
+<link rel="stylesheet" type="text/css"
+	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript"
+	th:src="@{/webjars//bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div>
+			<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+				<a class="navbar-brand" th:href="@{/}"> <img
+					th:src="@{/images/ShopmeAdminSmall.png}" />
+				</a>
+
+				<button class="navbar-toggler" type="button"
+					data-bs-toggle="collapse" data-bs-target="#topNavbar">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="topNavbar">
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/users}">Users</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/categories}">Categories</a>
+					</ul>
+
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/brands}">Brands</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/products}">Products</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/customers}">Customers</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/shipping}">Shipping</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/orders}">Orders</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/report}">Sales Report</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/articles}">Articles</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/menus}">Menus</a>
+					</ul>
+					<ul class="navbar-nav">
+						<a class="nav-link" th:href="@{/settings}">Settings</a>
+					</ul>
+
+				</div>
+			</nav>
+		</div>
+		<div>
+			<h2>Manage Users</h2>
+		</div>
+		<a th:href="@{/users/new}">Create New Users</a>
+		<div th:if="${message != null}" class="alert alert-success text-center">
+		[[${message}]]
+			
+		</div>
+
+		<div>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>User Id</th>
+
+						<th>Photos</th>
+						<th>Email</th>
+
+						<th>First Name</th>
+
+						<th>Last Name</th>
+
+						<th>Roles</th>
+
+						<th>Enabled</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="user: ${listUsers}">
+						<td>[[${user.id}]]</td>
+						<td></td>
+						<td>[[${user.email}]]</td>
+						<td>[[${user.firstName}]]</td>
+						<td>[[${user.lastName}]]</td>
+						<td>[[${user.roles}]]</td>
+						<td>[[${user.enabled}]]</td>
+						<td>Edit &nbsp; Delete</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="text-center">
+			<p>Copyright © 2021 | Theme: eCommerce | Powered by Tri Quang</p>
+		</div>
+	</div>
+</body>
+</html>
