@@ -3,6 +3,8 @@ package com.triquang.admin.user;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.triquang.common.entity.Role;
 import com.triquang.common.entity.User;
 
 @Service
+@Transactional
 public class UserService {
 
 	@Autowired
@@ -93,6 +96,10 @@ public class UserService {
 		}
 
 		userRepository.deleteById(id);
+	}
+	
+	public void updateUserEnableStatus(Integer id, boolean enabled) {
+		userRepository.updateEnableStatuss(id, enabled);
 	}
 
 }
