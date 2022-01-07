@@ -34,7 +34,7 @@ public class UserService {
 
 	}
 
-	public void save(User user) {
+	public User save(User user) {
 		boolean isUpdatingUser = (user.getId() != null);
 
 		if (isUpdatingUser) {
@@ -49,7 +49,7 @@ public class UserService {
 			encoderPassword(user);
 		}
 
-		userRepository.save(user);
+		return userRepository.save(user);
 
 	}
 
@@ -97,7 +97,7 @@ public class UserService {
 
 		userRepository.deleteById(id);
 	}
-	
+
 	public void updateUserEnableStatus(Integer id, boolean enabled) {
 		userRepository.updateEnableStatuss(id, enabled);
 	}
