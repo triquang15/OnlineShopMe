@@ -8,7 +8,7 @@
 		<artifactId>ShopmeWebParent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>ShopmeBackEnd</artifactId>
 	<name>ShopmeBackEnd</name>
 	<description>Shopme Admin Project</description>
@@ -16,6 +16,22 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+
+
+		<!-- https://mvnrepository.com/artifact/net.sf.supercsv/super-csv -->
+		<dependency>
+			<groupId>net.sf.supercsv</groupId>
+			<artifactId>super-csv</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+
 
 	</dependencies>
 

@@ -1,6 +1,5 @@
 package com.triquang.common.entity;
 
-import java.beans.Transient;
 import java.util.HashSet;
 import java.util.Set;
 
