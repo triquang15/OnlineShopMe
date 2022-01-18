@@ -31,7 +31,7 @@ public class UserRepositoryTest {
 	@Test
 	public void testCreateUser() {
 		Role roleAdmin = entityManager.find(Role.class, 1);
-		User user = new User("triquang@gmail.com", "1234567", "Tri", "Quang");
+		User user = new User("triquang@gmail.com", "12345678", "Tri", "Quang");
 		user.addRole(roleAdmin);
 
 		User saveUser = repository.save(user);
