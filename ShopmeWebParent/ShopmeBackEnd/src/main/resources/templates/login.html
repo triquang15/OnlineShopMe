@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-<head>
-<meta http-equiv="Context-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1.0, minimum-scale=1">
-<title>Login - Shop Admin</title>
+<head th:replace="fragments :: page_head('Home - Shopme Admin')" />
 
-<link rel="stylesheet" type="text/css"
-	th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
-	
-</head>
 <body>
 	<div class="container-fluid text-center">
 		<div>
@@ -22,6 +14,10 @@
 		<p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
 			
 		</div>
+		
+		<div th:if="${param.logout}">
+			<p class="text-warning">You have been logged out.</p>
+		</div>
 			<div class="border border-secondary rounded p-3">
 				<p>Access to Shopme Control Panel</p>
 				<p>
@@ -30,14 +26,17 @@
 				<p>
 					<input type="password" name="password" placeholder="Password" class="form-control" required />
 				</p>
+				
+				<p>
+					<input type="checkbox" name="remember-me"/> &nbsp; Remember Me
+				</p>
 				<p>
 					<input type="submit" value="Login" class="btn btn-primary"/>
 				</p>
+				
 			</div>
 		</form>
-		<div>
-			<p>Copyright © 2021 | Theme: eCommerce | Powered by Tri Quang</p>
-		</div>
+		<div th:replace="fragments :: footer"></div>
 	</div>
 </body>
 </html>

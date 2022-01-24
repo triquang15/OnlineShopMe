@@ -2,6 +2,7 @@ package com.triquang.admin.user;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -31,6 +32,10 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	public User getByEmail(String email) {
+		return userRepository.getUserByEmail(email);
+	}
+
 	public List<User> listAll() {
 		return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
 	}
@@ -57,6 +62,25 @@ public class UserService {
 
 		return userRepository.save(user);
 
+	}
+
+	// Code update password
+	public User updateAccount(User userInForm) {
+		User userInDb = userRepository.findById(userInForm.getId()).get();
+
+		if (!userInForm.getPassword().isEmpty()) {
+			userInDb.setPassword(userInForm.getPassword());
+			encoderPassword(userInDb);
+		}
+
+		if (userInForm.getPhotos() != null) {
+			userInDb.setPhotos(userInForm.getPhotos());
+		}
+
+		userInDb.setFirstName(userInForm.getFirstName());
+		userInDb.setLastName(userInForm.getLastName());
+
+		return userRepository.save(userInDb);
 	}
 
 	public Page<User> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
