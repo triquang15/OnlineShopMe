@@ -1,4 +1,4 @@
-package com.triquang.admin.user;
+package com.triquang.admin.user.controller;
 
 import java.io.IOException;
 
@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.triquang.admin.FileUploadUtil;
 import com.triquang.admin.security.ShopmeUserDetails;
+import com.triquang.admin.user.UserService;
 import com.triquang.common.entity.User;
 
 @Controller
@@ -31,7 +32,7 @@ public class AccountController {
 		User user = service.getByEmail(email);
 		model.addAttribute("user", user);
 
-		return "account_form";
+		return "users/account_form";
 	}
 
 	@PostMapping("/account/update")

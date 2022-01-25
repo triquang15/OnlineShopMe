@@ -9,7 +9,6 @@ import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import com.triquang.admin.user.AbstractExporter;
 import com.triquang.common.entity.User;
 
 public class UserCsvExport extends AbstractExporter {

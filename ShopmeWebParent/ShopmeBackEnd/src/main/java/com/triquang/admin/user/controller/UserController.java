@@ -1,4 +1,4 @@
-package com.triquang.admin.user;
+package com.triquang.admin.user.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.triquang.admin.FileUploadUtil;
+import com.triquang.admin.user.UserNotFoundException;
+import com.triquang.admin.user.UserService;
 import com.triquang.admin.user.export.UserCsvExport;
 import com.triquang.admin.user.export.UserExcelExporter;
 import com.triquang.admin.user.export.UserPdfExporter;
@@ -63,7 +65,7 @@ public class UserController {
 		model.addAttribute("reverseSortDir", reverseSortDir);
 		model.addAttribute("keyword", keyword);
 
-		return "user";
+		return "users/user";
 	}
 
 	@GetMapping("users/new")
@@ -75,7 +77,7 @@ public class UserController {
 		model.addAttribute("listRoles", listRoles);
 		model.addAttribute("pageTitle", "Create New User");
 
-		return "user_form";
+		return "users/user_form";
 	}
 
 	@PostMapping("/users/save")
@@ -115,7 +117,7 @@ public class UserController {
 			model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
 			model.addAttribute("listRoles", listRoles);
 
-			return "update_user";
+			return "users/update_user";
 		} catch (UserNotFoundException ex) {
 
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());

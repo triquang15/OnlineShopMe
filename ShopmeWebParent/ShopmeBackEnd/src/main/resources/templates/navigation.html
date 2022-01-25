@@ -17,12 +17,15 @@
 						<span class="navbar-toggler-icon"></span>
 					</button>
 				<div class="collapse navbar-collapse" id="topNavbar">
-					<ul class="navbar-nav">
+					<ul class="navbar-nav" sec:authorize="hasAuthority('Admin')">
 						<a class="nav-link" th:href="@{/users}">Users</a>
 					</ul>
+					
+					<th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
 					<ul class="navbar-nav">
 						<a class="nav-link" th:href="@{/categories}">Categories</a>
 					</ul>
+					</th:block>
 
 					<ul class="navbar-nav">
 						<a class="nav-link" th:href="@{/brands}">Brands</a>
@@ -48,7 +51,7 @@
 					<ul class="navbar-nav">
 						<a class="nav-link" th:href="@{/menus}">Menus</a>
 					</ul>
-					<ul class="navbar-nav">
+					<ul class="navbar-nav" sec:authorize="hasAuthority('Admin')">
 						<a class="nav-link" th:href="@{/settings}">Settings</a>
 					</ul>
 					
