@@ -2,6 +2,7 @@ package com.triquang.admin.category;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -70,19 +71,43 @@ public class CategoryRepositoryTest {
 			}
 		}
 	}
-	
+
 	private void printChildrent(Category parent, int subLevel) {
 		int newSubLevel = subLevel + 1;
 		Set<Category> children = parent.getChildren();
-		
+
 		for (Category subCategory : children) {
-			for(int i = 0; i < newSubLevel; i++) {
+			for (int i = 0; i < newSubLevel; i++) {
 				System.out.print("----");
 			}
 			System.out.println(subCategory.getName());
-			
+
 			printChildrent(subCategory, newSubLevel);
 		}
+	}
+
+	@Test
+	public void testListRootCategories() {
+		List<Category> rootCategories = repo.findRootCategories();
+		rootCategories.forEach(cat -> System.out.println(cat.getName()));
+	}
+
+	@Test
+	public void testByFindName() {
+		String name = "Sam Sung";
+		Category category = repo.findByName(name);
+
+		assertThat(category).isNotNull();
+		assertThat(category.getName()).isEqualTo(name);
+	}
+
+	@Test
+	public void testFindByAlias() {
+		String alias = "Iphone 12 Pro Max";
+		Category category = repo.findByAlias(alias);
+
+		assertThat(category).isNotNull();
+		assertThat(category.getAlias()).isEqualTo(alias);
 	}
 
 }
