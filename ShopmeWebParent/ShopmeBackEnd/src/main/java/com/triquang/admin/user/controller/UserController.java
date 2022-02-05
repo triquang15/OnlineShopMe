@@ -108,7 +108,7 @@ public class UserController {
 		return "redirect:/users/page/1?sortField=id&sortDir=asc&keyword=" + firstPartOfEmail;
 	}
 
-	@GetMapping("/user/edit/{id}")
+	@GetMapping("/users/edit/{id}")
 	public String editUser(@PathVariable(name = "id") Integer id, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			User user = service.get(id);
@@ -117,7 +117,7 @@ public class UserController {
 			model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
 			model.addAttribute("listRoles", listRoles);
 
-			return "users/update_user";
+			return "users/user_form";
 		} catch (UserNotFoundException ex) {
 
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
@@ -126,7 +126,7 @@ public class UserController {
 
 	}
 
-	@GetMapping("/user/delete/{id}")
+	@GetMapping("/users/delete/{id}")
 	public String deleteUser(@PathVariable(name = "id") Integer id, Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
@@ -141,7 +141,7 @@ public class UserController {
 
 	}
 
-	@GetMapping("/user/{id}/enabled/{status}")
+	@GetMapping("/users/{id}/enabled/{status}")
 	public String updatedUserEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled,
 			RedirectAttributes redirectAttributes) {
 

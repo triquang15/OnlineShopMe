@@ -26,7 +26,7 @@ public class FileUploadUtil {
 			Path filePath = uploadPath.resolve(fileName);
 			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException ex) {
-			
+
 			throw new IOException("Could not save file: " + fileName, ex);
 		}
 	}
@@ -41,13 +41,24 @@ public class FileUploadUtil {
 						Files.delete(file);
 					} catch (IOException e) {
 						LOGGER.error("Could not delete file: " + file);
-					//	System.out.println("Could not delete file: " + file);
+						// System.out.println("Could not delete file: " + file);
 					}
 				}
 			});
 		} catch (IOException e) {
 			LOGGER.error("Could not list directory: " + dirPath);
-			//System.out.println("Could not list directory: " + dirPath);
+			// System.out.println("Could not list directory: " + dirPath);
+		}
+	}
+
+	public static void removeDir(String categoryDir) {
+		cleanDir(categoryDir);
+
+		try {
+			Files.delete(Paths.get(categoryDir));
+
+		} catch (IOException e) {
+			LOGGER.error("Could not remove directory", categoryDir);
 		}
 	}
 }
