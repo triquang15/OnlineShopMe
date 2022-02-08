@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html  xmlns:th="http://www.thymeleaf.org">
-<head th:fragment="page_head(title, remove)" th:remove="${remove}">
+<head th:fragment="page_head(title)">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0">
 
@@ -19,18 +19,18 @@
 		<p>Shopme Control Panel - Copyright &copy; Shopme</p>
 	</div>
 	
-	<th th:fragment="column_link(fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
+	<th th:fragment="column_link(moduleURL, fieldName, columnLabel, removeTag)" th:remove="${removeTag}">
 		<a class="text-white"
-			th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName}  +'&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">
+			th:href="@{${moduleURL} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName}  +'&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
 			[[${columnLabel}]]
 		</a>								
 		<span th:if="${sortField == fieldName}"
 			th:class="${sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}" ></span>					
 	</th>
 						
-	<a th:fragment="page_link(pageNum, label)"
+	<a th:fragment="page_link(moduleURL, pageNum, label)"
 		class="page-link" 
-		th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${label}]]</a>
+		th:href="@{${moduleURL} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
 	
 	<div th:fragment="user_photos" th:remove="tag">
 		<span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
@@ -64,7 +64,7 @@
 		</th:block>	
 	</div>
 	
-	<div th:fragment="pagination(entityName)" th:remove="tag">
+	<div th:fragment="pagination(moduleURL, entityName)" th:remove="tag">
 	<div class="text-center m-1" th:if="${totalItems > 0}">
 		<span>Showing [[${entityName}]] # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
 	</div>
@@ -76,31 +76,31 @@
 		<nav>
 		  <ul class="pagination justify-content-center flex-wrap">
 		    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(1, 'First')"></a>
+		    	<a th:replace="fragments :: page_link(${moduleURL}, 1, 'First')"></a>
 		    </li>		  
 		    <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(${currentPage - 1}, 'Previous')"></a>
+		    	<a th:replace="fragments :: page_link(${moduleURL}, ${currentPage - 1}, 'Previous')"></a>
 		    </li>
 		    
 		    <li th:class="${currentPage != i ? 'page-item': 'page-item active'}" 
 		    	th:each="i : ${#numbers.sequence(1, totalPages)}">
-		    	<a th:replace="fragments :: page_link(${i}, ${i})"></a>
+		    	<a th:replace="fragments :: page_link(${moduleURL}, ${i}, ${i})"></a>
 		    </li>
 		    
 		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(${currentPage + 1}, 'Next')"></a>
+		    	<a th:replace="fragments :: page_link(${moduleURL}, ${currentPage + 1}, 'Next')"></a>
 		    </li>
 		    
 		    <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
-		    	<a th:replace="fragments :: page_link(${totalPages}, 'Last')"></a>
+		    	<a th:replace="fragments :: page_link(${moduleURL}, ${totalPages}, 'Last')"></a>
 		    </li>		    
 		  </ul>
 		</nav>	
 	</div>		
 	</div>
 	
-	<div th:fragment="search_form_and_message()">
-		<form th:action="@{${moduleURL} + '/page/1'}" class="form-inline m-3">
+	<div th:fragment="search_form_and_message(moduleURL)">
+		<form th:action="@{${moduleURL}}" class="form-inline m-3">
 			<input type="hidden" name="sortField" th:value="${sortField}" />
 			<input type="hidden" name="sortDir" th:value="${sortDir}" />
 			
@@ -119,19 +119,6 @@
 		<div th:if="${message != null}" class="alert alert-success text-center">
 			[[${message}]]
 		</div>		
-	</div>
-	
-	<div th:fragment="format_currency(amount)" th:remove="tag">
-		<span th:if="${CURRENCY_SYMBOL_POSITION == 'Before price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>[[${#numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]<span th:if="${CURRENCY_SYMBOL_POSITION == 'After price'}" th:remove="tag">[[${CURRENCY_SYMBOL}]]</span>
-	</div>
-	
-	<div th:fragment="format_time(dateTime)" th:remove="tag">
-		<span th:text="${#dates.format(dateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
-	</div>
-	
-	<div th:fragment="currency_input(amount)" th:remove="tag">
-		<input type="text" readonly class="form-control" th:value="${(CURRENCY_SYMBOL_POSITION == 'Before price' ? CURRENCY_SYMBOL : '') + #numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE) + (CURRENCY_SYMBOL_POSITION == 'After price' ? CURRENCY_SYMBOL : '')}">
-	</div>
-				
+	</div>	
 </body>
 </html>
