@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: page_head(${pageTitle})" />
+<head>
+	<head th:replace="fragments :: page_head(${pageTitle}, 'tag')" />
+	<link rel="stylesheet" th:href="@{/richtext/richtext.min.css}" />
+	<script th:src="@{/richtext/jquery.richtext.min.js}"></script>
+</head>
+
 <body>
 	<div class="container-fluid">
 		<div th:replace="navigation :: menu"></div>
@@ -8,7 +13,7 @@
 			<h2>Manage Products | [[${pageTitle}]]</h2>
 		</div>
 
-		<form th:action="@{/products/save}" method="post"
+		<form th:action="@{/products/save}" method="post" onsubmit="return checkUnique(this)"
 			th:object="${product}">
 			<input type="hidden" th:field="*{id}" />
 			<div>
@@ -26,6 +31,9 @@
 
 					<li class="nav-item"><a class="nav-link " data-toggle="tab"
 						href="#details" role="tab">Details</a></li>
+						
+					<li class="nav-item"><a class="nav-link " data-toggle="tab"
+						href="#shipping" role="tab">Shipping</a></li>
 				</ul>
 
 				<!-- Tab panes -->
@@ -33,9 +41,14 @@
 					<div class="tab-pane active p-3" id="overview" role="tabpanel">
 						<div th:replace="products/product_overview :: content"></div>
 					</div>
-					<div class="tab-pane" id="description" role="tabpanel">Description</div>
+					<div class="tab-pane" id="description" role="tabpanel">
+						<div th:replace="products/product_description :: content"></div>
+					</div>
 					<div class="tab-pane" id="images" role="tabpanel">Images</div>
 					<div class="tab-pane" id="details" role="tabpanel">Details</div>
+					<div class="tab-pane p-3" id="shipping" role="tabpanel">
+						<div th:replace="products/product_shipping :: content"></div>
+					</div>
 				</div>
 			</div>
 
@@ -60,6 +73,10 @@
 		dropDownCategories = $("#category");
 		
 		$(document).ready(function() {
+			
+			$("#shortDescription").richText();
+			$("#fullDescription").richText();
+			
 			dropDownBrands.change(function() {
 				dropDownCategories.empty();
 				getCategories();
@@ -80,6 +97,32 @@
 			});
 			
 		}
+		
+		function checkUnique(form) {
+			productId = $("#id").val();
+			productName = $("#name").val();
+			
+			csrfValue = $("input[name='_csrf']").val();
+			
+			url = "[[@{/products/check_unique}]]";
+			
+			params = {id: productId, name: productName, _csrf: csrfValue};
+			
+			$.post(url, params, function(response) {
+				if (response == "OK") {
+					form.submit();
+				} else if (response == "Duplicate") {
+					showWarningModal("There is another product having the name " + productName);	
+				} else {
+					showErrorModal("Unknown response from server");
+				}
+				
+			}).fail(function() {
+				showErrorModal("Could not connect to the server");
+			});
+			
+			return false;
+		}	
 	</script>
 	<script th:src="@{/js/common_form.js}"></script>
 </body>
