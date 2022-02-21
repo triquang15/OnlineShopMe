@@ -107,4 +107,17 @@ public class ProductRepositotyTest {
 		assertThat(savedProduct.getImages().size()).isEqualTo(3);
 	}
 
+	@Test
+	public void testSaveProductWithDetails() {
+		Integer productId = 1;
+		Product product = productRepository.findById(productId).get();
+
+		product.addDetail("Deivice Memory", "128 GB");
+		product.addDetail("CPU Model", "MediaTek");
+		product.addDetail("OS", "Android 10");
+
+		Product savedProduct = productRepository.save(product);
+		assertThat(savedProduct.getDetails()).isNotEmpty();
+	}
+
 }
