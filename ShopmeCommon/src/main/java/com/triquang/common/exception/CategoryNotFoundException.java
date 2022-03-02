@@ -1,4 +1,4 @@
-package com.triquang.admin.category;
+package com.triquang.common.exception;
 
 public class CategoryNotFoundException extends Exception {
 	public CategoryNotFoundException(String message) {

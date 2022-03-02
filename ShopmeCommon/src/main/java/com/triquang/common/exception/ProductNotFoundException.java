@@ -1,4 +1,4 @@
-package com.triquang.admin.product;
+package com.triquang.common.exception;
 
 public class ProductNotFoundException extends Exception {
 	public ProductNotFoundException(String message) {
