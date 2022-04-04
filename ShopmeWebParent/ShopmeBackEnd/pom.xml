@@ -17,6 +17,11 @@
 	</properties>
 	<dependencies>
 
+		<dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 		<!-- https://mvnrepository.com/artifact/net.sf.supercsv/super-csv -->
 		<dependency>
