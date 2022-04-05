@@ -41,6 +41,11 @@ public class Country {
 		this.name = name;
 	}
 
+	public Country(Integer id) {
+		super();
+		this.id = id;
+	}
+
 	public Integer getId() {
 		return id;
 	}
