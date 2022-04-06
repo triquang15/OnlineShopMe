@@ -1,4 +1,4 @@
-package com.triquang.admin.setting.state;
+package com.triquang.common.entity;
 
 public class StateDTO {
 	private Integer id;
