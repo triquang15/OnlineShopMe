@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.triquang.admin.paging.PagingAndSortingHelper;
 import com.triquang.common.entity.Role;
 import com.triquang.common.entity.User;
 
@@ -83,16 +84,20 @@ public class UserService {
 		return userRepository.save(userInDb);
 	}
 
-	public Page<User> listByPage(int pageNumber, String sortField, String sortDir, String keyword) {
-		Sort sort = Sort.by(sortField);
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+	public void listByPage(int pageNumber, PagingAndSortingHelper helper) {
+		Sort sort = Sort.by(helper.getSortField());
+		sort = helper.getSortDir().equals("asc") ? sort.ascending() : sort.descending();
 
 		Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
+		Page<User> page = null;
 
-		if (keyword != null) {
-			return userRepository.findAll(keyword, pageable);
+		if (helper.getKeyword() != null) {
+			page = userRepository.findAll(helper.getKeyword(), pageable);
+		} else {
+			page = userRepository.findAll(pageable);
 		}
-		return userRepository.findAll(pageable);
+
+		helper.updateModelAttributes(pageNumber, page);
 	}
 
 	public void encoderPassword(User user) {

@@ -11,7 +11,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import com.triquang.common.entity.User;
 
-public class UserCsvExport extends AbstractExporter {
+public class UserCsvExporter extends AbstractExporter {
 
 	public void export(List<User> listUsers, HttpServletResponse response) throws IOException {
 
