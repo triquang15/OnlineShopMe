@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -60,6 +62,10 @@ public class Customer {
 	@ManyToOne
 	@JoinColumn(name = "country_id")
 	private Country country;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "authencation_type", length = 10)
+	private AuthencationType authencationType;
 
 	public Customer() {
 	}
@@ -192,5 +198,13 @@ public class Customer {
 	public String getFullName() {
 		return firstName + " " + lastName;
 	}
+
+	public AuthencationType getAuthencationType() {
+		return authencationType;
+	}
+
+	public void setAuthencationType(AuthencationType authencationType) {
+		this.authencationType = authencationType;
+	}	
 		
 }
