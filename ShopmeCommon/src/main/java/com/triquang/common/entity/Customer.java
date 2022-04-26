@@ -73,6 +73,11 @@ public class Customer {
 	public Customer() {
 	}
 
+	public Customer(Integer id) {
+		super();
+		this.id = id;
+	}
+
 	public Integer getId() {
 		return id;
 	}
