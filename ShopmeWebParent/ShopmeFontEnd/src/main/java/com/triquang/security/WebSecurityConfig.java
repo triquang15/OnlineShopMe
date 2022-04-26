@@ -33,13 +33,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/customer").authenticated()
+			.antMatchers("/account_details", "/update_account_details").authenticated()
 			.anyRequest().permitAll()
 			.and()
 			.formLogin()
 				.loginPage("/login")
 				.usernameParameter("email")
-				.successHandler(auth2LoginSuccessHandler)
+				.successHandler(databaseLoginSuccessHandler)
 				.permitAll()
 			.and()
 			.oauth2Login()
