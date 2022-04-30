@@ -7,6 +7,8 @@ import com.triquang.common.entity.CartItem;
 import com.triquang.common.entity.Customer;
 import com.triquang.common.entity.Product;
 
+import antlr.collections.List;
+
 @Service
 public class ShoppingCartService {
 	@Autowired
@@ -35,5 +37,9 @@ public class ShoppingCartService {
 		cartRepo.save(cartItem);
 
 		return updatedQuantity;
+	}
+	
+	public java.util.List<CartItem> listCartItems(Customer customer) {
+		return cartRepo.findByCustomer(customer);
 	}
 }
