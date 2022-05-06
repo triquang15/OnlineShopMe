@@ -1,4 +1,5 @@
 package com.triquang.admin.product;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +17,7 @@ import com.triquang.common.entity.Product;
 import com.triquang.common.entity.ProductImage;
 
 public class ProductSaveHelper {
-private static final Logger LOGGER = LoggerFactory.getLogger(ProductSaveHelper.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductSaveHelper.class);
 	
 	static void deleteExtraImagesWeredRemovedOnForm(Product product) {
 		String extraImageDir = "../product-images/" + product.getId() + "/extras";

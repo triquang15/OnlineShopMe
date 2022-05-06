@@ -43,7 +43,7 @@ public class UserController {
 			@PathVariable(name = "pageNum") int pageNum) {
 		service.listByPage(pageNum, helper);		
 		
-		return "users/user";		
+		return "users/users";		
 	}
 	
 	
