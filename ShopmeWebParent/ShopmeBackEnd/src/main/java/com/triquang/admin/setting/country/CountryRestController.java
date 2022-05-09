@@ -15,18 +15,17 @@ import com.triquang.common.entity.Country;
 @RestController
 public class CountryRestController {
 
-	@Autowired
-	private CountryRepository repo;
-
+	@Autowired private CountryRepository repo;
+	
 	@GetMapping("/countries/list")
 	public List<Country> listAll() {
 		return repo.findAllByOrderByNameAsc();
 	}
 	
 	@PostMapping("/countries/save")
-	public String save(@RequestBody Country country ) {
-		Country saveCountry = repo.save(country);
-		return String.valueOf(saveCountry.getId());
+	public String save(@RequestBody Country country) {
+		Country savedCountry = repo.save(country);
+		return String.valueOf(savedCountry.getId());
 	}
 	
 	@DeleteMapping("/countries/delete/{id}")

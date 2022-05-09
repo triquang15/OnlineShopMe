@@ -15,7 +15,7 @@ import org.springframework.test.annotation.Rollback;
 
 import com.triquang.common.entity.CartItem;
 import com.triquang.common.entity.Customer;
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 import com.triquang.shoppingcart.CartItemRepository;
 
 @DataJpaTest

@@ -49,7 +49,7 @@ public class UserController {
 	
 	@GetMapping("/users/new")
 	public String newUser(Model model) {
-		List<Role> listRoles = service.listRole();
+		List<Role> listRoles = service.listRoles();
 		
 		User user = new User();
 		user.setEnabled(true);
@@ -97,7 +97,7 @@ public class UserController {
 			RedirectAttributes redirectAttributes) {
 		try {
 			User user = service.get(id);
-			List<Role> listRoles = service.listRole();
+			List<Role> listRoles = service.listRoles();
 			
 			model.addAttribute("user", user);
 			model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
@@ -128,7 +128,7 @@ public class UserController {
 	@GetMapping("/users/{id}/enabled/{status}")
 	public String updateUserEnabledStatus(@PathVariable("id") Integer id,
 			@PathVariable("status") boolean enabled, RedirectAttributes redirectAttributes) {
-		service.updateUserEnableStatus(id, enabled);
+		service.updateUserEnabledStatus(id, enabled);
 		String status = enabled ? "enabled" : "disabled";
 		String message = "The user ID " + id + " has been " + status;
 		redirectAttributes.addFlashAttribute("message", message);

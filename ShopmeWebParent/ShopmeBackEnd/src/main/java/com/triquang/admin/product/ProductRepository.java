@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 
 public interface ProductRepository extends PagingAndSortingRepository<Product, Integer> {
 	

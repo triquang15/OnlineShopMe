@@ -11,8 +11,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
-import com.triquang.common.entity.Setting;
-import com.triquang.common.entity.SettingCategory;
+import com.triquang.common.entity.setting.Setting;
+import com.triquang.common.entity.setting.SettingCategory;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)

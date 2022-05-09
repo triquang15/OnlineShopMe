@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.triquang.common.entity.AuthencationType;
+import com.triquang.common.entity.AuthenticationType;
 import com.triquang.common.entity.Customer;
 import com.triquang.customer.CustomerService;
 import com.triquang.security.CustomerUserDetails;
@@ -30,7 +30,7 @@ public class DatabaseLoginSuccessHandler extends SavedRequestAwareAuthentication
 		CustomerUserDetails userDetails = (CustomerUserDetails) authentication.getPrincipal();
 		Customer customer = userDetails.getCustomer();
 		
-		customerService.updateAuthencationType(customer, AuthencationType.DATABASE);
+		customerService.updateAuthencationType(customer, AuthenticationType.DATABASE);
 		
 		super.onAuthenticationSuccess(request, response, authentication);
 	}

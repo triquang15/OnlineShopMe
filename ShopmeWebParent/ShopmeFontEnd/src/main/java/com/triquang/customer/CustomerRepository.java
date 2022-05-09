@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.triquang.common.entity.AuthencationType;
+import com.triquang.common.entity.AuthenticationType;
 import com.triquang.common.entity.Customer;
 
 public interface CustomerRepository extends CrudRepository<Customer, Integer> {
@@ -19,9 +19,9 @@ public interface CustomerRepository extends CrudRepository<Customer, Integer> {
 	@Modifying
 	public void enable(Integer id);
 	
-	@Query("UPDATE Customer c SET c.authencationType = ?2 WHERE c.id = ?1")
+	@Query("UPDATE Customer c SET c.authenticationType = ?2 WHERE c.id = ?1")
 	@Modifying
-	public void updateAuthencationType(Integer customerId, AuthencationType type);
+	public void updateAuthencationType(Integer customerId, AuthenticationType type);
 	
 	public Customer findByResetPasswordToken(String token);
 

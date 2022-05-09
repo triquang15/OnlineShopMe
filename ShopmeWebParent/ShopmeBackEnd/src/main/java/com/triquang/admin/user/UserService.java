@@ -2,14 +2,10 @@ package com.triquang.admin.user;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,92 +17,77 @@ import com.triquang.common.entity.User;
 @Service
 @Transactional
 public class UserService {
-
-	public static final int USERS_PER_PAGE = 5;
-
-	@Autowired
-	private UserRepository userRepository;
+	public static final int USERS_PER_PAGE = 4;
 
 	@Autowired
-	private RoleRepository roleRepository;
+	private UserRepository userRepo;
+
+	@Autowired
+	private RoleRepository roleRepo;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	public User getByEmail(String email) {
-		return userRepository.getUserByEmail(email);
+		return userRepo.getUserByEmail(email);
 	}
 
 	public List<User> listAll() {
-		return (List<User>) userRepository.findAll(Sort.by("firstName").ascending());
+		return (List<User>) userRepo.findAll(Sort.by("firstName").ascending());
 	}
 
-	public List<Role> listRole() {
-		return (List<Role>) roleRepository.findAll();
+	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+		helper.listEntities(pageNum, USERS_PER_PAGE, userRepo);
+	}
 
+	public List<Role> listRoles() {
+		return (List<Role>) roleRepo.findAll();
 	}
 
 	public User save(User user) {
 		boolean isUpdatingUser = (user.getId() != null);
 
 		if (isUpdatingUser) {
-			User existingUser = userRepository.findById(user.getId()).get();
+			User existingUser = userRepo.findById(user.getId()).get();
+
 			if (user.getPassword().isEmpty()) {
 				user.setPassword(existingUser.getPassword());
 			} else {
-				encoderPassword(user);
+				encodePassword(user);
 			}
 
 		} else {
-			encoderPassword(user);
+			encodePassword(user);
 		}
 
-		return userRepository.save(user);
-
+		return userRepo.save(user);
 	}
 
-	// Code update password
 	public User updateAccount(User userInForm) {
-		User userInDb = userRepository.findById(userInForm.getId()).get();
+		User userInDB = userRepo.findById(userInForm.getId()).get();
 
 		if (!userInForm.getPassword().isEmpty()) {
-			userInDb.setPassword(userInForm.getPassword());
-			encoderPassword(userInDb);
+			userInDB.setPassword(userInForm.getPassword());
+			encodePassword(userInDB);
 		}
 
 		if (userInForm.getPhotos() != null) {
-			userInDb.setPhotos(userInForm.getPhotos());
+			userInDB.setPhotos(userInForm.getPhotos());
 		}
 
-		userInDb.setFirstName(userInForm.getFirstName());
-		userInDb.setLastName(userInForm.getLastName());
+		userInDB.setFirstName(userInForm.getFirstName());
+		userInDB.setLastName(userInForm.getLastName());
 
-		return userRepository.save(userInDb);
+		return userRepo.save(userInDB);
 	}
 
-	public void listByPage(int pageNumber, PagingAndSortingHelper helper) {
-		Sort sort = Sort.by(helper.getSortField());
-		sort = helper.getSortDir().equals("asc") ? sort.ascending() : sort.descending();
-
-		Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
-		Page<User> page = null;
-
-		if (helper.getKeyword() != null) {
-			page = userRepository.findAll(helper.getKeyword(), pageable);
-		} else {
-			page = userRepository.findAll(pageable);
-		}
-
-		helper.updateModelAttributes(pageNumber, page);
-	}
-
-	public void encoderPassword(User user) {
-		String encoderPassword = passwordEncoder.encode(user.getPassword());
-		user.setPassword(encoderPassword);
+	private void encodePassword(User user) {
+		String encodedPassword = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPassword);
 	}
 
 	public boolean isEmailUnique(Integer id, String email) {
-		User userByEmail = userRepository.getUserByEmail(email);
+		User userByEmail = userRepo.getUserByEmail(email);
 
 		if (userByEmail == null)
 			return true;
@@ -123,30 +104,26 @@ public class UserService {
 		}
 
 		return true;
-
 	}
 
 	public User get(Integer id) throws UserNotFoundException {
 		try {
-			return userRepository.findById(id).get();
-
+			return userRepo.findById(id).get();
 		} catch (NoSuchElementException ex) {
 			throw new UserNotFoundException("Could not find any user with ID " + id);
 		}
-
 	}
 
 	public void delete(Integer id) throws UserNotFoundException {
-		Long countById = userRepository.countById(id);
+		Long countById = userRepo.countById(id);
 		if (countById == null || countById == 0) {
 			throw new UserNotFoundException("Could not find any user with ID " + id);
 		}
 
-		userRepository.deleteById(id);
+		userRepo.deleteById(id);
 	}
 
-	public void updateUserEnableStatus(Integer id, boolean enabled) {
-		userRepository.updateEnableStatuss(id, enabled);
+	public void updateUserEnabledStatus(Integer id, boolean enabled) {
+		userRepo.updateEnabledStatus(id, enabled);
 	}
-
 }

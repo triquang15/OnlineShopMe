@@ -9,6 +9,5 @@ import com.triquang.common.entity.State;
 
 public interface StateRepository extends CrudRepository<State, Integer> {
 	
-	public List<State> findByCountryOrderByName(Country country);
-
+	public List<State> findByCountryOrderByNameAsc(Country country);
 }

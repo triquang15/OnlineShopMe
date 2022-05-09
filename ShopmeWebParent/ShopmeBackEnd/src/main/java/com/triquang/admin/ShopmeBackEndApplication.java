@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @SpringBootApplication
-@EntityScan({"com.triquang.common.entity", "com.triquang.admin.user"})
+@EntityScan({"com.triquang.common.entity"})
 public class ShopmeBackEndApplication {
 
 	public static void main(String[] args) {

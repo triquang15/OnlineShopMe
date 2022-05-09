@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.triquang.category.CategoryService;
 import com.triquang.common.entity.Category;
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.CategoryNotFoundException;
 import com.triquang.common.exception.ProductNotFoundException;
 

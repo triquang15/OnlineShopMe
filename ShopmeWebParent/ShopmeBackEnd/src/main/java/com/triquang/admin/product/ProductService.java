@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.triquang.admin.paging.PagingAndSortingHelper;
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.ProductNotFoundException;
 
 @Service

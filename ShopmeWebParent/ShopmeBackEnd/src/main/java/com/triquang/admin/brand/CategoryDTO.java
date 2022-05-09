@@ -5,11 +5,9 @@ public class CategoryDTO {
 	private String name;
 
 	public CategoryDTO() {
-		super();
 	}
 
 	public CategoryDTO(Integer id, String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}

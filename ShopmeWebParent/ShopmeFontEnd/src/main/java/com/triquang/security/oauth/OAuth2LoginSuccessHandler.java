@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.triquang.common.entity.AuthencationType;
+import com.triquang.common.entity.AuthenticationType;
 import com.triquang.common.entity.Customer;
 import com.triquang.customer.CustomerService;
 
@@ -35,7 +35,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		System.out.println("OAuth2LoginSuccessHandler: " + name + " | " + email);
 		System.out.println("Client Name: " + clientName);
 		
-		AuthencationType authencationType = getAuthencationType(clientName);
+		AuthenticationType authencationType = getAuthencationType(clientName);
 		
 		Customer customer = customerService.getCustomerByEmail(email);
 		if (customer == null) {
@@ -47,13 +47,13 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
 	
-	private AuthencationType getAuthencationType(String clientName) {
+	private AuthenticationType getAuthencationType(String clientName) {
 		if(clientName.equals("Google")) {
-			return AuthencationType.GOOGLE;
+			return AuthenticationType.GOOGLE;
 		} else if (clientName.equals("Facebook")) {
-			return AuthencationType.FACEBOOK;
+			return AuthenticationType.FACEBOOK;
 		} else {
-			return AuthencationType.DATABASE;
+			return AuthenticationType.DATABASE;
 		}
 	}
 

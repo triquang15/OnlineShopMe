@@ -2,8 +2,8 @@ package com.triquang.setting;
 
 import java.util.List;
 
-import com.triquang.common.entity.Setting;
-import com.triquang.common.entity.SettingBag;
+import com.triquang.common.entity.setting.Setting;
+import com.triquang.common.entity.setting.SettingBag;
 
 public class EmailSettingBag extends SettingBag {
 

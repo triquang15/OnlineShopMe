@@ -112,13 +112,13 @@ public class UserRepositoryTest {
 	@Test
 	public void testDisabledUser() {
 		Integer id = 2;
-		repository.updateEnableStatuss(id, false);
+		repository.updateEnabledStatus(id, false);
 	}
 
 	@Test
 	public void testEnabledUser() {
 		Integer id = 6;
-		repository.updateEnableStatuss(id, true);
+		repository.updateEnabledStatus(id, true);
 	}
 
 	@Test

@@ -5,11 +5,10 @@ public class StateDTO {
 	private String name;
 	
 	public StateDTO() {
-		super();
+		
 	}
-
+	
 	public StateDTO(Integer id, String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}
@@ -28,7 +27,5 @@ public class StateDTO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	
+	}	
 }

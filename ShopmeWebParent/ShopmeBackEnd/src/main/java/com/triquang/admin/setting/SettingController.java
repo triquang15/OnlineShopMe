@@ -18,23 +18,23 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.triquang.admin.FileUploadUtil;
 import com.triquang.common.entity.Currency;
-import com.triquang.common.entity.Setting;
+import com.triquang.common.entity.setting.Setting;
 
 @Controller
 public class SettingController {
-	
+
 	@Autowired private SettingService service;
 	
-	@Autowired private CurrencyRepository currencyRepository;
+	@Autowired private CurrencyRepository currencyRepo;
 	
 	@GetMapping("/settings")
 	public String listAll(Model model) {
-		List<Setting> listSettings = service.listAllSetting();
-		List<Currency> listCurrencies = currencyRepository.findAllByOrderByNameAsc();
+		List<Setting> listSettings = service.listAllSettings();
+		List<Currency> listCurrencies = currencyRepo.findAllByOrderByNameAsc();
 		
 		model.addAttribute("listCurrencies", listCurrencies);
 		
-		for(Setting setting : listSettings) {
+		for (Setting setting : listSettings) {
 			model.addAttribute(setting.getKey(), setting.getValue());
 		}
 		
@@ -45,18 +45,19 @@ public class SettingController {
 	public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipartFile,
 			HttpServletRequest request, RedirectAttributes ra) throws IOException {
 		GeneralSettingBag settingBag = service.getGeneralSettings();
-		 
+		
 		saveSiteLogo(multipartFile, settingBag);
 		saveCurrencySymbol(request, settingBag);
+		
 		updateSettingValuesFromForm(request, settingBag.list());
 		
-		ra.addFlashAttribute("message", "General settings have been saved");
-		return  "redirect:/settings";
+		ra.addFlashAttribute("message", "General settings have been saved.");
 		
+		return "redirect:/settings";
 	}
 
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag settingBag) throws IOException {
-		if(!multipartFile.isEmpty()) {
+		if (!multipartFile.isEmpty()) {
 			String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			String value = "/site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
@@ -69,18 +70,18 @@ public class SettingController {
 	
 	private void saveCurrencySymbol(HttpServletRequest request, GeneralSettingBag settingBag) {
 		Integer currencyId = Integer.parseInt(request.getParameter("CURRENCY_ID"));
-		Optional<Currency> findByIdResult = currencyRepository.findById(currencyId);
+		Optional<Currency> findByIdResult = currencyRepo.findById(currencyId);
 		
-		if(findByIdResult.isPresent()) {
+		if (findByIdResult.isPresent()) {
 			Currency currency = findByIdResult.get();
 			settingBag.updateCurrencySymbol(currency.getSymbol());
 		}
 	}
 	
 	private void updateSettingValuesFromForm(HttpServletRequest request, List<Setting> listSettings) {
-		for(Setting setting : listSettings) {
+		for (Setting setting : listSettings) {
 			String value = request.getParameter(setting.getKey());
-			if(value != null) {
+			if (value != null) {
 				setting.setValue(value);
 			}
 		}
@@ -89,22 +90,22 @@ public class SettingController {
 	}
 	
 	@PostMapping("/settings/save_mail_server")
-	public String saveMailServerSettings(HttpServletRequest request, RedirectAttributes ra) {
+	public String saveMailServerSetttings(HttpServletRequest request, RedirectAttributes ra) {
 		List<Setting> mailServerSettings = service.getMailServerSettings();
 		updateSettingValuesFromForm(request, mailServerSettings);
 		
 		ra.addFlashAttribute("message", "Mail server settings have been saved");
 		
-		return "redirect:/settings";
+		return "redirect:/settings#mailServer";
 	}
 	
 	@PostMapping("/settings/save_mail_templates")
-	public String saveMailTemplateSettings(HttpServletRequest request, RedirectAttributes ra) {
+	public String saveMailTemplateSetttings(HttpServletRequest request, RedirectAttributes ra) {
 		List<Setting> mailTemplateSettings = service.getMailTemplateSettings();
 		updateSettingValuesFromForm(request, mailTemplateSettings);
 		
 		ra.addFlashAttribute("message", "Mail template settings have been saved");
 		
-		return "redirect:/settings";
-	}
+		return "redirect:/settings#mailTemplates";
+	}	
 }

@@ -22,7 +22,7 @@ import com.triquang.admin.paging.PagingAndSortingParam;
 import com.triquang.admin.security.ShopmeUserDetails;
 import com.triquang.common.entity.Brand;
 import com.triquang.common.entity.Category;
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.ProductNotFoundException;
 
 @Controller

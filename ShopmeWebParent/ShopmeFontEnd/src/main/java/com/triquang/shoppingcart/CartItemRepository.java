@@ -8,7 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.triquang.common.entity.CartItem;
 import com.triquang.common.entity.Customer;
-import com.triquang.common.entity.Product;
+import com.triquang.common.entity.product.Product;
 
 public interface CartItemRepository extends CrudRepository<CartItem, Integer> {
 	

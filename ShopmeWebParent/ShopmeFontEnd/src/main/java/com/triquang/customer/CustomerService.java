@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.triquang.common.entity.AuthencationType;
+import com.triquang.common.entity.AuthenticationType;
 import com.triquang.common.entity.Country;
 import com.triquang.common.entity.Customer;
 import com.triquang.setting.CountryRepository;
@@ -40,7 +40,7 @@ public class CustomerService {
 		encodePassword(customer);
 		customer.setEnabled(false);
 		customer.setCreatedTime(new Date());
-		customer.setAuthencationType(AuthencationType.DATABASE);
+		customer.setAuthenticationType(AuthenticationType.DATABASE);
 
 		String randomCode = RandomString.make(64);
 		customer.setVerificationCode(randomCode);
@@ -70,20 +70,20 @@ public class CustomerService {
 
 	}
 
-	public void updateAuthencationType(Customer customer, AuthencationType type) {
-		if (!customer.getAuthencationType().equals(type)) {
+	public void updateAuthencationType(Customer customer, AuthenticationType type) {
+		if (!customer.getAuthenticationType().equals(type)) {
 			customerRepository.updateAuthencationType(customer.getId(), type);
 		}
 	}
 
-	public void addNewCustomerUponOAuthLogin(String name, String email, String countryCode, AuthencationType authencationType) {
+	public void addNewCustomerUponOAuthLogin(String name, String email, String countryCode, AuthenticationType authencationType) {
 		Customer customer = new Customer();
 		customer.setEmail(email);
 		setName(name, customer);
 		
 		customer.setEnabled(true);
 		customer.setCreatedTime(new Date());
-		customer.setAuthencationType(authencationType);
+		customer.setAuthenticationType(authencationType);
 		customer.setPassword("");
 		customer.setAddressLine1("");
 		customer.setCity("");
@@ -113,7 +113,7 @@ public class CustomerService {
 	public void update(Customer customerInForm) {
 		Customer customerInDB = customerRepository.findById(customerInForm.getId()).get();
 		
-		if (customerInDB.getAuthencationType().equals(AuthencationType.DATABASE)) {
+		if (customerInDB.getAuthenticationType().equals(AuthenticationType.DATABASE)) {
 			if (!customerInForm.getPassword().isEmpty()) {
 				String encodedPassword = passwordEncoder.encode(customerInForm.getPassword());
 				customerInForm.setPassword(encodedPassword);			
@@ -127,7 +127,7 @@ public class CustomerService {
 		customerInForm.setEnabled(customerInDB.isEnabled());
 		customerInForm.setCreatedTime(customerInDB.getCreatedTime());
 		customerInForm.setVerificationCode(customerInDB.getVerificationCode());
-		customerInForm.setAuthencationType(customerInDB.getAuthencationType());
+		customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
 		customerInForm.setResetPasswordToken(customerInDB.getResetPasswordToken());	
 		
 		customerRepository.save(customerInForm);
