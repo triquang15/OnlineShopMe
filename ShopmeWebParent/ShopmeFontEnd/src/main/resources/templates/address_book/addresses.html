@@ -26,12 +26,13 @@
 							<b>Your Primary Address</b>
 							
 							<th:block th:if="${usePrimaryAddressAsDefault}">
-								<span class="text-danger">[Default]</span>
+							<span class="text-danger">[Default]</span>
 							</th:block>
 							
 							<th:block th:unless="${usePrimaryAddressAsDefault}">
-								<a th:href="@{'/address_book/default/0'}">[Set as default]</a>
-							</th:block>
+							<a th:unless="${param.redirect}" th:href="@{'/address_book/default/0'}">[Set as default]</a>
+							<a th:if="${param.redirect}" th:href="@{'/address_book/default/0?redirect=' + ${param.redirect}}">[Set as default]</a>
+							</th:block>							
 						</div>
 						<div class="col">
 							<div class="float-right">
@@ -56,12 +57,14 @@
 							<b>Address #[[${status.count + 1}]]</b>
 							
 							<th:block th:if="${address.defaultForShipping}">
-								<span class="text-danger">[Default]</span>
+							<span class="text-danger">[Default]</span>
 							</th:block>
 							
 							<th:block th:unless="${address.defaultForShipping}">
-								<a th:href="@{'/address_book/default/' + ${address.id}}">[Set as default]</a>
+							<a th:unless="${param.redirect}" th:href="@{'/address_book/default/' + ${address.id}}">[Set as default]</a>
+							<a th:if="${param.redirect}" th:href="@{'/address_book/default/' + ${address.id} + '?redirect=' + ${param.redirect}}">[Set as default]</a>
 							</th:block>
+														
 						</div>
 						<div class="col">
 							<div class="float-right">
