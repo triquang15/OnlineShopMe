@@ -29,6 +29,7 @@ import com.triquang.customer.CustomerService;
 import com.triquang.order.OrderService;
 import com.triquang.setting.CurrencySettingBag;
 import com.triquang.setting.EmailSettingBag;
+import com.triquang.setting.PaymentSettingBag;
 import com.triquang.setting.SettingService;
 import com.triquang.shipping.ShippingRateService;
 import com.triquang.shoppingcart.ShoppingCartService;
@@ -49,7 +50,6 @@ public class CheckoutController {
 	private OrderService orderService;
 	@Autowired
 	private SettingService settingService;
-	private String formatCurrency;
 
 	@GetMapping("/checkout")
 	public String showCheckoutPage(Model model, HttpServletRequest request) {
@@ -73,6 +73,13 @@ public class CheckoutController {
 		List<CartItem> cartItems = cartService.listCartItems(customer);
 		CheckoutInfo checkoutInfo = checkoutService.prepareCheckout(cartItems, shippingRate);
 
+		String currencyCode = settingService.getCurrencyCode();
+		PaymentSettingBag paymentSettings = settingService.getPaymentSettings();
+		String paypalClientId = paymentSettings.getClientID();
+		
+		model.addAttribute("paypalClientId", paypalClientId);
+		model.addAttribute("currencyCode", currencyCode);
+		model.addAttribute("customer", customer);
 		model.addAttribute("checkoutInfo", checkoutInfo);
 		model.addAttribute("cartItems", cartItems);
 
