@@ -19,14 +19,20 @@ import com.triquang.common.entity.product.Product;
 
 @Service
 public class OrderService {
-	
-	@Autowired private OrderRepository repository;
 
+	@Autowired private OrderRepository repo;
+	
 	public Order createOrder(Customer customer, Address address, List<CartItem> cartItems,
 			PaymentMethod paymentMethod, CheckoutInfo checkoutInfo) {
 		Order newOrder = new Order();
 		newOrder.setOrderTime(new Date());
-		newOrder.setStatus(OrderStatus.NEW);
+		
+		if (paymentMethod.equals(PaymentMethod.PAYPAL)) {
+			newOrder.setStatus(OrderStatus.PAID);
+		} else {
+			newOrder.setStatus(OrderStatus.NEW);
+		}
+		
 		newOrder.setCustomer(customer);
 		newOrder.setProductCost(checkoutInfo.getProductCost());
 		newOrder.setSubtotal(checkoutInfo.getProductTotal());
@@ -37,7 +43,7 @@ public class OrderService {
 		newOrder.setDeliverDays(checkoutInfo.getDeliverDays());
 		newOrder.setDeliverDate(checkoutInfo.getDeliverDate());
 		
-		if(address == null) {
+		if (address == null) {
 			newOrder.copyAddressFromCustomer();
 		} else {
 			newOrder.copyShippingAddress(address);
@@ -60,7 +66,7 @@ public class OrderService {
 			orderDetails.add(orderDetail);
 		}
 		
-		return repository.save(newOrder);
 		
+		return repo.save(newOrder);
 	}
 }
