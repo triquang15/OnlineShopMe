@@ -1,5 +1,6 @@
 package com.triquang.admin.order;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -14,6 +15,8 @@ import com.triquang.admin.paging.PagingAndSortingHelper;
 import com.triquang.admin.setting.country.CountryRepository;
 import com.triquang.common.entity.Country;
 import com.triquang.common.entity.order.Order;
+import com.triquang.common.entity.order.OrderStatus;
+import com.triquang.common.entity.order.OrderTrack;
 
 @Service
 public class OrderService {
@@ -77,4 +80,25 @@ public class OrderService {
 		
 		orderRepo.save(orderInForm);
 	}	
+	
+	public void updateStatus(Integer orderId, String status) {
+		Order orderInDB = orderRepo.findById(orderId).get();
+		OrderStatus orderStatus = OrderStatus.valueOf(status);
+		
+		if(!orderInDB.hasStatus(orderStatus)) {
+			List<OrderTrack> orderTracks = orderInDB.getOrderTracks();
+			
+			OrderTrack track = new OrderTrack();
+			track.setOrder(orderInDB);
+			track.setStatus(orderStatus);
+			track.setUpdatedTime(new Date());
+			track.setNotes(orderStatus.defaultDescription());
+			
+			orderTracks.add(track);
+			
+			orderInDB.setStatus(orderStatus);
+			
+			orderRepo.save(orderInDB);
+		}
+	}
 }
