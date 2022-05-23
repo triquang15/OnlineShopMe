@@ -75,6 +75,7 @@ public class OrderService {
 	}
 	
 	public Page<Order> listForCustomerByPage(Customer customer, int pageNum, 
+
 			String sortField, String sortDir, String keyword) {
 		Sort sort = Sort.by(sortField);
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
@@ -88,4 +89,8 @@ public class OrderService {
 		return repo.findAll(customer.getId(), pageable);
 		
 	}	
+	
+	public Order getOrder(Integer id, Customer customer) {
+		return repo.findByIdAndCustomer(id, customer);
+	}
 }
