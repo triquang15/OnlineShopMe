@@ -1,4 +1,4 @@
-package com.triquang.admin.order;
+package com.triquang.common.exception;
 
 public class OrderNotFoundException extends Exception {
 

@@ -18,8 +18,10 @@ import com.triquang.common.entity.Customer;
 import com.triquang.common.entity.order.Order;
 import com.triquang.common.entity.order.OrderDetail;
 import com.triquang.common.entity.order.OrderStatus;
+import com.triquang.common.entity.order.OrderTrack;
 import com.triquang.common.entity.order.PaymentMethod;
 import com.triquang.common.entity.product.Product;
+import com.triquang.common.exception.OrderNotFoundException;
 
 @Service
 public class OrderService {
@@ -71,11 +73,18 @@ public class OrderService {
 			orderDetails.add(orderDetail);
 		}
 		
+		OrderTrack track = new OrderTrack();
+		track.setOrder(newOrder);
+		track.setStatus(OrderStatus.NEW);
+		track.setNotes(OrderStatus.NEW.defaultDescription());
+		track.setUpdatedTime(new Date());
+		
+		newOrder.getOrderTracks().add(track);
+		
 		return repo.save(newOrder);
 	}
 	
 	public Page<Order> listForCustomerByPage(Customer customer, int pageNum, 
-
 			String sortField, String sortDir, String keyword) {
 		Sort sort = Sort.by(sortField);
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
@@ -87,10 +96,36 @@ public class OrderService {
 		}
 		
 		return repo.findAll(customer.getId(), pageable);
-		
-	}	
+	}
 	
 	public Order getOrder(Integer id, Customer customer) {
 		return repo.findByIdAndCustomer(id, customer);
+	}	
+	
+	public void setOrderReturnRequested(OrderReturnRequest request, Customer customer) 
+			throws OrderNotFoundException {
+		Order order = repo.findByIdAndCustomer(request.getOrderId(), customer);
+		if (order == null) {
+			throw new OrderNotFoundException("Order ID " + request.getOrderId() + " not found");
+		}
+		
+		if (order.isReturnRequested()) return;
+		
+		OrderTrack track = new OrderTrack();
+		track.setOrder(order);
+		track.setUpdatedTime(new Date());
+		track.setStatus(OrderStatus.RETURN_REQUESTED);
+		
+		String notes = "Reason: " + request.getReason();
+		if (!"".equals(request.getNote())) {
+			notes += ". " + request.getNote();
+		}
+		
+		track.setNotes(notes);
+		
+		order.getOrderTracks().add(track);
+		order.setStatus(OrderStatus.RETURN_REQUESTED);
+		
+		repo.save(order);
 	}
 }
