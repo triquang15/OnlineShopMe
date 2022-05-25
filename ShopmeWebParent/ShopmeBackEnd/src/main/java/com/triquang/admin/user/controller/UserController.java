@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.triquang.admin.AmazonS3Util;
 import com.triquang.admin.FileUploadUtil;
 import com.triquang.admin.paging.PagingAndSortingHelper;
 import com.triquang.admin.paging.PagingAndSortingParam;
@@ -72,8 +73,8 @@ public class UserController {
 			
 			String uploadDir = "user-photos/" + savedUser.getId();
 			
-			FileUploadUtil.cleanDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			AmazonS3Util.removeFolder(uploadDir);
+			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 			
 		} else {
 			if (user.getPhotos().isEmpty()) user.setPhotos(null);
@@ -115,7 +116,10 @@ public class UserController {
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
-			service.delete(id);;
+			service.delete(id);
+			String userPhotoDir = "user-photos/" + id;
+			AmazonS3Util.removeFolder(userPhotoDir);
+			
 			redirectAttributes.addFlashAttribute("message", 
 					"The user ID " + id + " has been deleted successfully");
 		} catch (UserNotFoundException ex) {
