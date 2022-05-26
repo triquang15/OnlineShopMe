@@ -84,22 +84,23 @@ public class OrderService {
 	
 	public void updateStatus(Integer orderId, String status) {
 		Order orderInDB = orderRepo.findById(orderId).get();
-		OrderStatus orderStatus = OrderStatus.valueOf(status);
+		OrderStatus statusToUpdate = OrderStatus.valueOf(status);
 		
-		if(!orderInDB.hasStatus(orderStatus)) {
+		if (!orderInDB.hasStatus(statusToUpdate)) {
 			List<OrderTrack> orderTracks = orderInDB.getOrderTracks();
 			
 			OrderTrack track = new OrderTrack();
 			track.setOrder(orderInDB);
-			track.setStatus(orderStatus);
+			track.setStatus(statusToUpdate);
 			track.setUpdatedTime(new Date());
-			track.setNotes(orderStatus.defaultDescription());
+			track.setNotes(statusToUpdate.defaultDescription());
 			
 			orderTracks.add(track);
 			
-			orderInDB.setStatus(orderStatus);
+			orderInDB.setStatus(statusToUpdate);
 			
 			orderRepo.save(orderInDB);
 		}
+		
 	}
 }
