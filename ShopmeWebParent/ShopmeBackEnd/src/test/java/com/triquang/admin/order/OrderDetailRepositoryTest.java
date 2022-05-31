@@ -22,21 +22,20 @@ import com.triquang.common.entity.order.OrderDetail;
 @Rollback(false)
 public class OrderDetailRepositoryTest {
 
-	@Autowired
-	private OrderDetailRepository repo;
-
+	@Autowired private OrderDetailRepository repo;
+	
 	@Test
 	public void testFindWithCategoryAndTimeBetween() throws ParseException {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date startTime = dateFormat.parse("2022-05-03");
-		Date endTime = dateFormat.parse("2022-05-30");
-
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date startTime = dateFormatter.parse("2021-09-01");
+		Date endTime = dateFormatter.parse("2021-09-30");
+		
 		List<OrderDetail> listOrderDetails = repo.findWithCategoryAndTimeBetween(startTime, endTime);
-
+		
 		assertThat(listOrderDetails.size()).isGreaterThan(0);
-
+		
 		for (OrderDetail detail : listOrderDetails) {
-			System.out.printf("%s | %d | %2f | %.2f | %.2f \n",
+			System.out.printf("%-30s | %d | %10.2f| %10.2f | %10.2f \n", 
 					detail.getProduct().getCategory().getName(),
 					detail.getQuantity(), detail.getProductCost(),
 					detail.getShippingCost(), detail.getSubtotal());
@@ -46,8 +45,8 @@ public class OrderDetailRepositoryTest {
 	@Test
 	public void testFindWithProductAndTimeBetween() throws ParseException {
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date startTime = dateFormatter.parse("2022-05-03");
-		Date endTime = dateFormatter.parse("2022-05-30");
+		Date startTime = dateFormatter.parse("2021-10-01");
+		Date endTime = dateFormatter.parse("2021-10-30");
 		
 		List<OrderDetail> listOrderDetails = repo.findWithProductAndTimeBetween(startTime, endTime);
 		

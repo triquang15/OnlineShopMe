@@ -30,7 +30,7 @@ public class DatabaseLoginSuccessHandler extends SavedRequestAwareAuthentication
 		CustomerUserDetails userDetails = (CustomerUserDetails) authentication.getPrincipal();
 		Customer customer = userDetails.getCustomer();
 		
-		customerService.updateAuthencationType(customer, AuthenticationType.DATABASE);
+		customerService.updateAuthenticationType(customer, AuthenticationType.DATABASE);
 		
 		super.onAuthenticationSuccess(request, response, authentication);
 	}
