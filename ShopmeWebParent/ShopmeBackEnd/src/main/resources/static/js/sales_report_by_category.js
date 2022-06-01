@@ -1,4 +1,4 @@
-// Sales Report by Date
+// Sales Report by CATEGORY
 var data;
 var chartOptions;
 
