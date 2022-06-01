@@ -1,25 +1,33 @@
 package com.triquang.admin.report;
 
+import java.util.Objects;
+
 public class ReportItem {
 	private String identifier;
 	private float grossSales;
 	private float netSales;
 	private int ordersCount;
+	private int productsCount;
 
 	public ReportItem() {
-
 	}
 
 	public ReportItem(String identifier) {
-		super();
 		this.identifier = identifier;
 	}
 
 	public ReportItem(String identifier, float grossSales, float netSales) {
+		this.identifier = identifier;
+		this.grossSales = grossSales;
+		this.netSales = netSales;
+	}
+	
+	public ReportItem(String identifier, float grossSales, float netSales, int productsCount) {
 		super();
 		this.identifier = identifier;
 		this.grossSales = grossSales;
 		this.netSales = netSales;
+		this.productsCount = productsCount;
 	}
 
 	public String getIdentifier() {
@@ -56,10 +64,7 @@ public class ReportItem {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
-		return result;
+		return Objects.hash(identifier);
 	}
 
 	@Override
@@ -71,14 +76,9 @@ public class ReportItem {
 		if (getClass() != obj.getClass())
 			return false;
 		ReportItem other = (ReportItem) obj;
-		if (identifier == null) {
-			if (other.identifier != null)
-				return false;
-		} else if (!identifier.equals(other.identifier))
-			return false;
-		return true;
+		return Objects.equals(identifier, other.identifier);
 	}
-	
+
 	public void addGrossSales(float amount) {
 		this.grossSales += amount;
 		
@@ -92,4 +92,16 @@ public class ReportItem {
 		this.ordersCount++;
 	}
 
+	public int getProductsCount() {
+		return productsCount;
+	}
+
+	public void setProductsCount(int productsCount) {
+		this.productsCount = productsCount;
+	}
+
+	public void increaseProductsCount(int count) {
+		this.productsCount += count;
+	}
+	
 }
