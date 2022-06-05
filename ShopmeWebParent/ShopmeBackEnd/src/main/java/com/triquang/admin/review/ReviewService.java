@@ -2,19 +2,24 @@ package com.triquang.admin.review;
 
 import java.util.NoSuchElementException;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.triquang.admin.paging.PagingAndSortingHelper;
 import com.triquang.admin.paging.SearchRepository;
+import com.triquang.admin.product.ProductRepository;
 import com.triquang.common.entity.Review;
 import com.triquang.common.exception.ReviewNotFoundException;
 
 @Service
+@Transactional
 public class ReviewService {
 	public static final int REVIEWS_PER_PAGE = 5;
 	
 	@Autowired private ReviewRepository repo;
+	@Autowired private ProductRepository productRepository;
 	
 	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
 		helper.listEntities(pageNum, REVIEWS_PER_PAGE, (SearchRepository<?, Integer>) repo);
@@ -34,6 +39,7 @@ public class ReviewService {
 		reviewInDB.setComment(reviewInForm.getComment());
 		
 		repo.save(reviewInDB);
+		productRepository.updateReviewCountAndAverageRating(reviewInDB.getProduct().getId());
 	}
 	
 	public void delete(Integer id) throws ReviewNotFoundException {

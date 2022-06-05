@@ -119,5 +119,11 @@ public class ProductRepositotyTest {
 		Product savedProduct = productRepository.save(product);
 		assertThat(savedProduct.getDetails()).isNotEmpty();
 	}
+	
+	@Test
+	public void testUpdateReviewCountAndAverageRating() {
+		Integer productId = 100;
+		productRepository.updateReviewCountAndAverageRating(productId);
+	}
 
 }
