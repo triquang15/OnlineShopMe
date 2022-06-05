@@ -9,34 +9,42 @@ import org.springframework.stereotype.Service;
 
 import com.triquang.common.entity.Customer;
 import com.triquang.common.entity.Review;
+import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.ReviewNotFoundException;
-
 
 @Service
 public class ReviewService {
 	public static final int REVIEWS_PER_PAGE = 5;
-	
-	@Autowired private ReviewRepository repo;
 
-	public Page<Review> listByCustomerByPage(Customer customer, String keyword, int pageNum, 
-			String sortField, String sortDir) {
+	@Autowired
+	private ReviewRepository repo;
+
+	public Page<Review> listByCustomerByPage(Customer customer, String keyword, int pageNum, String sortField,
+			String sortDir) {
 		Sort sort = Sort.by(sortField);
 		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-		
+
 		Pageable pageable = PageRequest.of(pageNum - 1, REVIEWS_PER_PAGE, sort);
-		
+
 		if (keyword != null) {
 			return repo.findByCustomer(customer.getId(), keyword, pageable);
 		}
-		
+
 		return repo.findByCustomer(customer.getId(), pageable);
 	}
-	
+
 	public Review getByCustomerAndId(Customer customer, Integer reviewId) throws ReviewNotFoundException {
 		Review review = repo.findByCustomerAndId(customer.getId(), reviewId);
-		if (review == null) 
+		if (review == null)
 			throw new ReviewNotFoundException("Customer doesn not have any reviews with ID " + reviewId);
-		
+
 		return review;
+	}
+
+	public Page<Review> list3MostRecentReviewsByProduct(Product product) {
+		Sort sort = Sort.by("reviewTime").descending();
+		Pageable pageable = PageRequest.of(0, 3, sort);
+
+		return repo.findByProduct(product, pageable);
 	}
 }

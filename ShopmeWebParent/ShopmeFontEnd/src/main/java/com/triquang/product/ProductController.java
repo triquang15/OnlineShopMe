@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.triquang.category.CategoryService;
 import com.triquang.common.entity.Category;
+import com.triquang.common.entity.Review;
 import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.CategoryNotFoundException;
 import com.triquang.common.exception.ProductNotFoundException;
+import com.triquang.review.ReviewService;
 
 @Controller
 public class ProductController {
@@ -22,6 +24,9 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
+
+	@Autowired
+	private ReviewService reviewService;
 
 	@GetMapping("/c/{category_alias}")
 	public String viewCategoryFirstPage(@PathVariable("category_alias") String alias, Model model) {
@@ -67,9 +72,11 @@ public class ProductController {
 		try {
 			Product product = productService.getProduct(alias);
 			List<Category> listCategoryParents = categoryService.getCategoryParents(product.getCategory());
+			Page<Review> listReviews = reviewService.list3MostRecentReviewsByProduct(product);
 
 			model.addAttribute("listCategoryParents", listCategoryParents);
 			model.addAttribute("product", product);
+			model.addAttribute("listReviews", listReviews);
 			model.addAttribute("pageTitle", product.getShortName());
 
 			return "product/product_detail";
@@ -77,7 +84,7 @@ public class ProductController {
 			return "error/404";
 		}
 	}
-	
+
 	@GetMapping("/search")
 	public String searchFirstPage(@Param("keyword") String keyword, Model model) {
 		return searchByPage(keyword, 1, model);
@@ -87,7 +94,7 @@ public class ProductController {
 	public String searchByPage(@Param("keyword") String keyword, @PathVariable("pageNum") int pageNum, Model model) {
 		Page<Product> pageProducts = productService.search(keyword, pageNum);
 		List<Product> listResult = pageProducts.getContent();
-		
+
 		long startCount = (pageNum - 1) * ProductService.SEARCH_RESULTS_PER_PAGE + 1;
 		long endCount = startCount + ProductService.SEARCH_RESULTS_PER_PAGE - 1;
 		if (endCount > pageProducts.getTotalElements()) {
