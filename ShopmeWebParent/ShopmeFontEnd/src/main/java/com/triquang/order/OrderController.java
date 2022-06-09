@@ -90,7 +90,7 @@ public class OrderController {
 			product.setReviewedByCustomer(didCustomerReviewProduct);
 			
 			if(!didCustomerReviewProduct) {
-				boolean canCustomerReviewAndProduct = reviewService.canCustomerReviewAndProduct(customer, productId);
+				boolean canCustomerReviewAndProduct = reviewService.canCustomerReviewProduct(customer, productId);
 				product.setCustomerCanReview(canCustomerReviewAndProduct);
 			}
 		}

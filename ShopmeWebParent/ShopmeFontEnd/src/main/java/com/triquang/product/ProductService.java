@@ -1,5 +1,7 @@
 package com.triquang.product;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +23,7 @@ public class ProductService {
 		String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
 		Pageable pageable = PageRequest.of(pageNum - 1, PRODUCTS_PER_PAGE);
 
-		return repo.listByCatgory(categoryId, categoryIdMatch, pageable);
+		return repo.listByCategory(categoryId, categoryIdMatch, pageable);
 	}
 
 	public Product getProduct(String alias) throws ProductNotFoundException {
@@ -31,6 +33,16 @@ public class ProductService {
 		}
 
 		return product;
+	}
+
+	public Product getProduct(Integer id) throws ProductNotFoundException {
+		try {
+			Product product = repo.findById(id).get();
+			return product;
+		} catch (NoSuchElementException ex) {
+			throw new ProductNotFoundException("Could not find any product ID " + id);
+		}
+
 	}
 
 	public Page<Product> search(String keyword, int pageNum) {

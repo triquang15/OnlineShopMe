@@ -2,35 +2,42 @@ package com.triquang.product;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import com.triquang.ControllerHelper;
+import com.triquang.Utility;
 import com.triquang.category.CategoryService;
 import com.triquang.common.entity.Category;
+import com.triquang.common.entity.Customer;
 import com.triquang.common.entity.Review;
 import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.CategoryNotFoundException;
 import com.triquang.common.exception.ProductNotFoundException;
+import com.triquang.customer.CustomerService;
 import com.triquang.review.ReviewService;
 
 @Controller
 public class ProductController {
 	@Autowired
-	private CategoryService categoryService;
-
-	@Autowired
 	private ProductService productService;
-
+	@Autowired
+	private CategoryService categoryService;
 	@Autowired
 	private ReviewService reviewService;
+	
+	@Autowired
+	private ControllerHelper controllerHelper;
+
 
 	@GetMapping("/c/{category_alias}")
 	public String viewCategoryFirstPage(@PathVariable("category_alias") String alias, Model model) {
-
 		return viewCategoryByPage(alias, 1, model);
 	}
 
@@ -39,8 +46,8 @@ public class ProductController {
 			Model model) {
 		try {
 			Category category = categoryService.getCategory(alias);
-
 			List<Category> listCategoryParents = categoryService.getCategoryParents(category);
+
 			Page<Product> pageProducts = productService.listByCategory(pageNum, category.getId());
 			List<Product> listProducts = pageProducts.getContent();
 
@@ -61,18 +68,31 @@ public class ProductController {
 			model.addAttribute("category", category);
 
 			return "product/products_by_category";
-
 		} catch (CategoryNotFoundException ex) {
 			return "error/404";
 		}
 	}
 
 	@GetMapping("/p/{product_alias}")
-	public String viewProductDetail(@PathVariable("product_alias") String alias, Model model) {
+	public String viewProductDetail(@PathVariable("product_alias") String alias, Model model,
+			HttpServletRequest request) {
+
 		try {
 			Product product = productService.getProduct(alias);
 			List<Category> listCategoryParents = categoryService.getCategoryParents(product.getCategory());
 			Page<Review> listReviews = reviewService.list3MostRecentReviewsByProduct(product);
+
+			Customer customer = controllerHelper.getAuthenticatedCustomer(request);
+			if (customer != null) {
+				boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
+
+				if (customerReviewed) {
+					model.addAttribute("customerReviewed", customerReviewed);
+				} else {
+					boolean customerCanReview = reviewService.canCustomerReviewProduct(customer, product.getId());
+					model.addAttribute("customerCanReview", customerCanReview);
+				}
+			}
 
 			model.addAttribute("listCategoryParents", listCategoryParents);
 			model.addAttribute("product", product);
@@ -86,12 +106,12 @@ public class ProductController {
 	}
 
 	@GetMapping("/search")
-	public String searchFirstPage(@Param("keyword") String keyword, Model model) {
+	public String searchFirstPage(String keyword, Model model) {
 		return searchByPage(keyword, 1, model);
 	}
 
 	@GetMapping("/search/page/{pageNum}")
-	public String searchByPage(@Param("keyword") String keyword, @PathVariable("pageNum") int pageNum, Model model) {
+	public String searchByPage(String keyword, @PathVariable("pageNum") int pageNum, Model model) {
 		Page<Product> pageProducts = productService.search(keyword, pageNum);
 		List<Product> listResult = pageProducts.getContent();
 
@@ -109,8 +129,10 @@ public class ProductController {
 		model.addAttribute("pageTitle", keyword + " - Search Result");
 
 		model.addAttribute("keyword", keyword);
+		model.addAttribute("searchKeyword", keyword);
 		model.addAttribute("listResult", listResult);
 
 		return "product/search_result";
 	}
+
 }
