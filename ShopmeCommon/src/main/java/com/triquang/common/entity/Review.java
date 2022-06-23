@@ -13,28 +13,45 @@ import com.triquang.common.entity.product.Product;
 @Entity
 @Table(name = "reviews")
 public class Review extends IdBasedEntity {
-	
+
 	@Column(length = 128, nullable = false)
 	private String headline;
-	
+
 	@Column(length = 300, nullable = false)
 	private String comment;
-	
-	private int rating;	
-	
+
+	private int rating;
+
+	private int votes;
+
 	@Column(nullable = false)
 	private Date reviewTime;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
+	public Review() {
+	}
+
+	public Review(Integer id) {
+		this.id = id;
+	}
+
 	public String getHeadline() {
 		return headline;
+	}
+
+	public int getVotes() {
+		return votes;
+	}
+
+	public void setVotes(int votes) {
+		this.votes = votes;
 	}
 
 	public void setHeadline(String headline) {
@@ -87,5 +104,4 @@ public class Review extends IdBasedEntity {
 				+ product.getShortName() + ", customer=" + customer.getFullName() + "]";
 	}
 
-	
 }
