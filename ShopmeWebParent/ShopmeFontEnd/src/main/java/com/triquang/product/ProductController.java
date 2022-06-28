@@ -22,19 +22,24 @@ import com.triquang.common.exception.CategoryNotFoundException;
 import com.triquang.common.exception.ProductNotFoundException;
 import com.triquang.customer.CustomerService;
 import com.triquang.review.ReviewService;
+import com.triquang.review.vote.ReviewVoteService;
 
 @Controller
 public class ProductController {
 	@Autowired
 	private ProductService productService;
+	
 	@Autowired
 	private CategoryService categoryService;
+	
 	@Autowired
 	private ReviewService reviewService;
-	
+
 	@Autowired
 	private ControllerHelper controllerHelper;
 
+	@Autowired
+	private ReviewVoteService reviewVoteService;
 
 	@GetMapping("/c/{category_alias}")
 	public String viewCategoryFirstPage(@PathVariable("category_alias") String alias, Model model) {
@@ -80,11 +85,14 @@ public class ProductController {
 		try {
 			Product product = productService.getProduct(alias);
 			List<Category> listCategoryParents = categoryService.getCategoryParents(product.getCategory());
-			Page<Review> listReviews = reviewService.list3MostRecentReviewsByProduct(product);
+			Page<Review> listReviews = reviewService.list3MostVotedReviewsByProduct(product);
 
 			Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 			if (customer != null) {
 				boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
+
+				reviewVoteService.markReviewsVoteForProductByCustomer(listReviews.getContent(), product.getId(),
+						customer.getId());
 
 				if (customerReviewed) {
 					model.addAttribute("customerReviewed", customerReviewed);

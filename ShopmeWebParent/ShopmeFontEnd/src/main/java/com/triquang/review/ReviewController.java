@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.triquang.Utility;
+import com.triquang.ControllerHelper;
 import com.triquang.common.entity.Customer;
 import com.triquang.common.entity.Review;
 import com.triquang.common.entity.product.Product;
 import com.triquang.common.exception.ProductNotFoundException;
 import com.triquang.common.exception.ReviewNotFoundException;
-import com.triquang.customer.CustomerService;
 import com.triquang.product.ProductService;
+import com.triquang.review.vote.ReviewVoteService;
 
 @Controller
 public class ReviewController {
@@ -29,9 +29,11 @@ public class ReviewController {
 	@Autowired
 	private ReviewService reviewService;
 	@Autowired
-	private CustomerService customerService;
+	private ControllerHelper controllerHelper;
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private ReviewVoteService voteService;
 
 	@GetMapping("/reviews")
 	public String listFirstPage(Model model) {
@@ -41,7 +43,7 @@ public class ReviewController {
 	@GetMapping("/reviews/page/{pageNum}")
 	public String listReviewsByCustomerByPage(Model model, HttpServletRequest request,
 			@PathVariable(name = "pageNum") int pageNum, String keyword, String sortField, String sortDir) {
-		Customer customer = getAuthenticatedCustomer(request);
+		Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 		Page<Review> page = reviewService.listByCustomerByPage(customer, keyword, pageNum, sortField, sortDir);
 		List<Review> listReviews = page.getContent();
 
@@ -69,15 +71,10 @@ public class ReviewController {
 		return "reviews/reviews_customer";
 	}
 
-	private Customer getAuthenticatedCustomer(HttpServletRequest request) {
-		String email = Utility.getEmailOfAuthenticatedCustomer(request);
-		return customerService.getCustomerByEmail(email);
-	}
-
 	@GetMapping("/reviews/detail/{id}")
 	public String viewReview(@PathVariable("id") Integer id, Model model, RedirectAttributes ra,
 			HttpServletRequest request) {
-		Customer customer = getAuthenticatedCustomer(request);
+		Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 		try {
 			Review review = reviewService.getByCustomerAndId(customer, id);
 			model.addAttribute("review", review);
@@ -91,7 +88,7 @@ public class ReviewController {
 
 	@GetMapping("/ratings/{productAlias}/page/{pageNum}")
 	public String listByProductByPage(Model model, @PathVariable(name = "productAlias") String productAlias,
-			@PathVariable(name = "pageNum") int pageNum, String sortField, String sortDir) {
+			@PathVariable(name = "pageNum") int pageNum, String sortField, String sortDir, HttpServletRequest request) {
 
 		Product product = null;
 
@@ -103,6 +100,11 @@ public class ReviewController {
 
 		Page<Review> page = reviewService.listByProduct(product, pageNum, sortField, sortDir);
 		List<Review> listReviews = page.getContent();
+
+		Customer customer = controllerHelper.getAuthenticatedCustomer(request);
+		if (customer != null) {
+			voteService.markReviewsVoteForProductByCustomer(listReviews, product.getId(), customer.getId());
+		}
 
 		model.addAttribute("totalPages", page.getTotalPages());
 		model.addAttribute("totalItems", page.getTotalElements());
@@ -129,8 +131,9 @@ public class ReviewController {
 	}
 
 	@GetMapping("/ratings/{productAlias}")
-	public String listByProductFirstPage(@PathVariable(name = "productAlias") String productAlias, Model model) {
-		return listByProductByPage(model, productAlias, 1, "reviewTime", "desc");
+	public String listByProductFirstPage(@PathVariable(name = "productAlias") String productAlias, Model model,
+			HttpServletRequest request) {
+		return listByProductByPage(model, productAlias, 1, "reviewTime", "desc", request);
 	}
 
 	@GetMapping("/write_review/product/{productId}")
@@ -146,7 +149,7 @@ public class ReviewController {
 			return "error/404";
 		}
 
-		Customer customer = getAuthenticatedCustomer(request);
+		Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 		boolean customerReviewed = reviewService.didCustomerReviewProduct(customer, product.getId());
 
 		if (customerReviewed) {
@@ -169,7 +172,7 @@ public class ReviewController {
 
 	@PostMapping("/post_review")
 	public String saveReview(Model model, Review review, Integer productId, HttpServletRequest request) {
-		Customer customer = getAuthenticatedCustomer(request);
+		Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 
 		Product product = null;
 
@@ -183,8 +186,9 @@ public class ReviewController {
 		review.setCustomer(customer);
 
 		Review savedReview = reviewService.save(review);
+
 		model.addAttribute("review", savedReview);
-		
+
 		return "reviews/review_done";
 	}
 }
